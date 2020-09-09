@@ -2,8 +2,24 @@ import amqp from 'amqp-connection-manager';
 import { ConfirmChannel } from 'amqplib';
 
 const host = 'amqp://localhost';
-const exchangeName = 'directExchange';
-const exchangeType = 'direct';
-const queueName = 'directQueue';
+const exchangeName = 'fanoutExchange';
+const exchangeType = 'fanout';
+const queueName = 'fanoutQueue';
 const message = {employeename: "medo"};
- 
+
+async function producer(){
+    const connection = amqp.connect([host]);
+    const channelData = await connection.createChannel({
+        json: true,
+        setup: async (channel : ConfirmChannel) =>{
+            channel.assertExchange(exchangeName, exchangeType, {durable: false});
+            // channel.assertQueue(queueName,{exclusive: true});
+
+        }
+    });
+    // channelData.sendToQueue(queueName,message);
+    channelData.publish(exchangeName,'',message);
+}
+
+console.log("start Direct");
+producer();
