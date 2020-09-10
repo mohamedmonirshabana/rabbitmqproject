@@ -25,3 +25,5 @@ async function consumer(){
     });
 }
 
+console.log("Start Consumer ");
+consumer();
