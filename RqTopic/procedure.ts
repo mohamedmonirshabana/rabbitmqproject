@@ -1,7 +1,8 @@
 import ampq from 'amqp-connection-manager';
 import { ConfirmChannel } from 'amqplib';
+import {host} from '../constants';
 
-const host = 'amqp://localhost';
+// const host = 'amqp://localhost';
 const exchangeName = 'RqTopicExchange';
 const exchangeType = "topic";
 const key ="anounse.foo";

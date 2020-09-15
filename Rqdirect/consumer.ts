@@ -1,7 +1,8 @@
 import amqp from 'amqp-connection-manager';
 import { ConfirmChannel, ConsumeMessage } from 'amqplib';
+import { host } from '../constants';
 
-const host = 'amqp://localhost';
+// const host = 'amqp://localhost';
 const exchangeName = 'direct_logs';
 // const queueName = 'directRoute';
 const exchangeType = "direct";

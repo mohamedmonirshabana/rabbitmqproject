@@ -1,8 +1,9 @@
 import amqp from 'amqp-connection-manager';
 import { ConfirmChannel, ConsumeMessage } from 'amqplib';
 import { JsxEmit } from 'typescript';
+import { host } from '../constants';
 
-const host = 'amqp://localhost';
+// const host = 'amqp://localhost';
 const exchangeName = 'fanoutExchange';
 const exchangeType = 'fanout';
 

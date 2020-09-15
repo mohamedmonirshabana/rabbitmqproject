@@ -1,8 +1,6 @@
 import amqp from 'amqp-connection-manager';
 import { ConfirmChannel } from 'amqplib';
-import { WORKING_EXCHANGE, WORKING_DLX , TTL_EXCHANGE, DODO_EXCHANGE, WORKING_QUEUE } from './constants';
-
-const host = 'amqp://localhost';
+import { WORKING_EXCHANGE, WORKING_DLX , TTL_EXCHANGE, DODO_EXCHANGE, WORKING_QUEUE, host } from '../constants';
 
 function assertExchange(channel : ConfirmChannel){
     return Promise.all([
