@@ -1,25 +1,29 @@
 import amqp from 'amqp-connection-manager';
 import { ConfirmChannel } from 'amqplib';
-import {host} from '../constants';
+import {host, Fanout_Exchange, Fanout_Queue_1, Fanout_Queue_2, Fanout_Queue_3, fanoutMessage} from '../constants';
 
-// const host = 'amqp://localhost';
-const exchangeName = 'fanoutExchange';
-const exchangeType = 'fanout';
-const queueName = 'fanoutQueue';
-const message = {employeename: "medo"};
+
 
 async function producer(){
     const connection = amqp.connect([host]);
     const channelData = await connection.createChannel({
         json: true,
         setup: async (channel : ConfirmChannel) =>{
-            channel.assertExchange(exchangeName, exchangeType, {durable: false});
-            // channel.assertQueue(queueName,{exclusive: true});
+            return await Promise.all([
+                channel.assertExchange(Fanout_Exchange,'fanout'),
+                channel.assertQueue(Fanout_Queue_1),
+                channel.assertQueue(Fanout_Queue_2),
+                channel.assertQueue(Fanout_Queue_3),
+                channel.bindQueue(Fanout_Queue_1, Fanout_Exchange,""),
+                channel.bindQueue(Fanout_Queue_2, Fanout_Exchange,""),
+                channel.bindQueue(Fanout_Queue_3, Fanout_Exchange,""),
+            ]);
 
         }
     });
-    // channelData.sendToQueue(queueName,message);
-    channelData.publish(exchangeName,'',message);
+    channelData.publish(Fanout_Exchange,"", fanoutMessage,{persistent: true});
+    
+    
 }
 
 console.log("start Direct");
