@@ -24,21 +24,6 @@ async function consumer(){
                     console.log(message?.content.toString());
                 }, {noAck: true}),
             ]);
-            // await channel.assertExchange(exchangeName, exchangeType,{durable:false});
-            // const qu = await (channel.assertQueue('',{exclusive: true}));
-            // queName = qu.queue;
-            // console.log(queName);
-            // channel.bindQueue(queName,exchangeName,'');
-            // channel.consume( queName,(messge: ConsumeMessage | any) =>{
-            //      if(messge.content == null){
-            //          console.log("message is null");
-            //      }else{
-            //          console.log("not null");
-            //      }
-            //      console.log(messge?.content.toString());
-            //     //  const msg = await messge.content.toString()
-            //     // console.log(msg);
-            // });
         }
     });
 }
