@@ -1,25 +1,33 @@
 import amqp from 'amqp-connection-manager';
 import { ConfirmChannel, ConsumeMessage } from 'amqplib';
-import { host } from '../constants';
+import { host, Direct_Exchange, Direct_Queue, Rout_Direct_Key, directmessage  } from '../constants';
 
-// const host = 'amqp://localhost';
-const exchangeName = 'direct_logs';
-const queueName = 'directRoute';
-const exchangeType = "direct";
-const RoutingKey = "directRout";
-const message =  {workername: 'Jack'};
+
+async function assert_Exchange(channel : ConfirmChannel){
+    return channel.assertExchange(Direct_Exchange,"direct");
+}
+
+async function assert_Queue(channel : ConfirmChannel){
+    return channel.assertQueue(Direct_Queue);
+}
+
 
 async function procedure(){
     const connection = amqp.connect([host]);
     const channelData = await connection.createChannel({
         json: true,
         setup: async (channel: ConfirmChannel) =>{
-            channel.assertExchange(exchangeName, exchangeType, {durable: false});
-            // channel.publish(exchangeName,RoutingKey,Buffer.from(message));
+            return await Promise.all([
+                 assert_Exchange(channel),
+                 assert_Queue(channel),
+
+            ]);
+            
         }
     });
 
-    channelData.publish(exchangeName,RoutingKey,message);
+
+    channelData.publish(Direct_Exchange,Rout_Direct_Key, directmessage );
 }
 
 console.log("Start Direct ");
