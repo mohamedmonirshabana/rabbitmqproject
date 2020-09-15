@@ -13,9 +13,9 @@ function assertExchange(channel : ConfirmChannel){
 
 function assertQueue(channel: ConfirmChannel){
     return Promise.all([
-        channel.assertQueue("work-retry-1-10s", { messageTtl: 10000, deadLetterExchange: "DODO_DLX" }),
-        channel.assertQueue("work-retry-1-40s", { messageTtl: 40000, deadLetterExchange: "DODO_DLX" }),
-        channel.assertQueue("work-retry-1-1m", { messageTtl: 60000, deadLetterExchange: "DODO_DLX" })
+        channel.assertQueue("w-10s", { messageTtl: 10000, deadLetterExchange: "DODO_DLX" }),
+        channel.assertQueue("w-40s", { messageTtl: 40000, deadLetterExchange: "DODO_DLX" }),
+        channel.assertQueue("w-1m", { messageTtl: 60000, deadLetterExchange: "DODO_DLX" })
     ]);  
 }
 
