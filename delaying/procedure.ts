@@ -11,30 +11,22 @@ function assertExchange(channel : ConfirmChannel){
 }
 
 function assertQueue(channel: ConfirmChannel){
-    return Promise.all([
-        
+    return Promise.all([       
         channel.assertQueue(WORKING_QUEUE),
-
         channel.assertQueue("w-10s", { messageTtl: 10000, deadLetterExchange: DODO_EXCHANGE }),
         channel.assertQueue("w-40s", { messageTtl: 40000, deadLetterExchange: DODO_EXCHANGE }),
         channel.assertQueue("w-60s", { messageTtl: 60000, deadLetterExchange: DODO_EXCHANGE })
     ]);  
 }
-
 function bind(channel: ConfirmChannel){
     return Promise.all([
         channel.bindQueue(WORKING_QUEUE,WORKING_EXCHANGE,""),
-        
         channel.bindQueue("w-10s", TTL_EXCHANGE, "retry-1"),
         channel.bindQueue("w-40s", TTL_EXCHANGE, "retry-2"),
         channel.bindQueue("w-60s", TTL_EXCHANGE, "retry-3"),
-
-        channel.bindQueue(WORKING_QUEUE,DODO_EXCHANGE,"")
-         
+        channel.bindQueue(WORKING_QUEUE,DODO_EXCHANGE,"")         
     ]);
 }
-
-
 
 async function procedure(){
     const connection = amqp.connect([host]);
