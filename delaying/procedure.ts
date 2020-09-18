@@ -5,17 +5,19 @@ import { WORKING_EXCHANGE, WORKING_DLX , TTL_EXCHANGE, DODO_EXCHANGE, WORKING_QU
 function assertExchange(channel : ConfirmChannel){
     return Promise.all([
         channel.assertExchange(WORKING_EXCHANGE,'fanout'),
-        channel.assertExchange(WORKING_DLX,'fanout'),
         channel.assertExchange(TTL_EXCHANGE,'direct'),
-        channel.assertExchange(DODO_EXCHANGE, 'fanout')
+        channel.assertExchange(DODO_EXCHANGE,'fanout'),
     ]);
 }
 
 function assertQueue(channel: ConfirmChannel){
     return Promise.all([
-        channel.assertQueue("w-10s", { messageTtl: 10000, deadLetterExchange: "DODO_DLX" }),
-        channel.assertQueue("w-40s", { messageTtl: 40000, deadLetterExchange: "DODO_DLX" }),
-        channel.assertQueue("w-1m", { messageTtl: 60000, deadLetterExchange: "DODO_DLX" })
+        
+        channel.assertQueue(WORKING_QUEUE),
+
+        channel.assertQueue("w-10s", { messageTtl: 10000, deadLetterExchange: DODO_EXCHANGE }),
+        channel.assertQueue("w-40s", { messageTtl: 40000, deadLetterExchange: DODO_EXCHANGE }),
+        channel.assertQueue("w-60s", { messageTtl: 60000, deadLetterExchange: DODO_EXCHANGE })
     ]);  
 }
 
@@ -23,9 +25,9 @@ function bind(channel: ConfirmChannel){
     return Promise.all([
         channel.bindQueue(WORKING_QUEUE,WORKING_EXCHANGE,""),
         
-        channel.bindQueue("work-retry-1-10s", TTL_EXCHANGE, "retry-1"),
-        channel.bindQueue("work-retry-1-40s", TTL_EXCHANGE, "retry-2"),
-        channel.bindQueue("work-retry-1-1m", TTL_EXCHANGE, "retry-3"),
+        channel.bindQueue("w-10s", TTL_EXCHANGE, "retry-1"),
+        channel.bindQueue("w-40s", TTL_EXCHANGE, "retry-2"),
+        channel.bindQueue("w-60s", TTL_EXCHANGE, "retry-3"),
 
         channel.bindQueue(WORKING_QUEUE,DODO_EXCHANGE,"")
          
@@ -44,8 +46,10 @@ async function procedure(){
            await bind(channel);
         }
     });
+    
     console.log("Start Sending");
-
+    await channelData.publish(WORKING_EXCHANGE,"",{message: "Dead Message"}, {persistent: true});
+    console.log("Finish Publish");
     await channelData.close();
     await connection.close();
 

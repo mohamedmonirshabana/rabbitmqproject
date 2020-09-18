@@ -1,3 +1,9 @@
+export enum Type {
+    Direct  = 'direct',
+    Fanout = 'fanout',
+    Topic = 'topic'
+};
+
 export const host = 'amqp://localhost';
 
 //-------Direct 
@@ -17,10 +23,11 @@ export const Topic_Exchange = "TopicExchange";
 export const Topic_Queue = "TopicQueue";
 export const Topic_message = {name: "Nodejs"};
 //-----------------------------------delay
-export const  WORKING_EXCHANGE ="Exchange_1";
+export const  WORKING_EXCHANGE ="WORKING_EXCHANGE";
 export const WORKING_DLX="Exchange_2";
-export const TTL_EXCHANGE= "Exchange_3";
-export const DODO_EXCHANGE= 'DODO_DLX';
+export const TTL_EXCHANGE= "TTL_EXCHANGE";
+
+export const DODO_EXCHANGE= 'DeadLetterExtchang';
 export const  WORKING_QUEUE= 'ququWorking';
 
 //--------------------------------deadletter

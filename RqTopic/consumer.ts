@@ -10,17 +10,19 @@ import { host, Topic_Exchange, Topic_Queue } from '../constants';
 
 
 async function consumer(){
-    const connection = ampq.connect([host]);
+    const connection = await ampq.connect([host]);
     // let queuename;
     const channelData = await connection.createChannel({
         json: true,
         setup: async (channel: ConfirmChannel) =>{
             return await Promise.all([
                 channel.bindQueue(Topic_Queue,Topic_Exchange, "develop.nodejs.Beginner"),
-                channel.consume(Topic_Queue,(message: ConsumeMessage | any) =>{
-                    console.log(message.content.toString());
-                },{noAck: true})
+                channel.consume(Topic_Queue, message =>{
+                        console.log("start Write");
+                        console.log(message?.content.toString());
+                   },{noAck: true}),
             ]);
+            
             // channel.assertExchange(exchangeName, exchangeType, {durable: false});
             // const que = await channel.assertQueue('',{exclusive: true});
             // queuename =que.queue ;
