@@ -34,3 +34,10 @@ export const  WORKING_QUEUE= 'ququWorking';
 export const Direct_Queue_1 = "directQueue_1";
 export const Direct_Queue_2 = "directQueue_2";
 export const deadLetterExchange = "deadLetter";
+//--------------------------------
+export const DeadL_Direct_Exchange = "directDeatExchange";
+export const Dead_letter_Exchange = "dead_Letter_Exchange";
+export const Dead_direct_queue_1 = "DeadQueue_1";
+export const Dead_direct_queue_2 = "DeadQueue_2";
+export const Dead_Route1 = "DeadLetter";
+export const Dead_Route2 = "Dead2Letter";

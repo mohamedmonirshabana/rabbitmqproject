@@ -1,25 +1,25 @@
 import amqp from 'amqp-connection-manager';
 import { ConfirmChannel } from 'amqplib';
-import { host,Direct_Exchange, Direct_Queue, Direct_Queue_1, deadLetterExchange,Bining_Key, Rout_Direct_Key } from '../constants';
+import { host, DeadL_Direct_Exchange, Dead_letter_Exchange, Dead_direct_queue_1, Dead_direct_queue_2, Dead_Route1, Dead_Route2, Type } from '../constants';
 
 const assertExchange = async(channel: ConfirmChannel)=>{
     return await Promise.all([
-        channel.assertExchange(Direct_Exchange, "direct"),
-        channel.assertExchange(deadLetterExchange,"direct")
+        channel.assertExchange(DeadL_Direct_Exchange , Type.Direct),
+        channel.assertExchange(Dead_letter_Exchange,Type.Direct)
     ]);
 }
 
 const assertQueue = async(channel: ConfirmChannel)=>{
         return await Promise.all([
-            channel.assertQueue(Direct_Queue,{ durable: false, messageTtl: 30000, deadLetterExchange: deadLetterExchange ,deadLetterRoutingKey: Rout_Direct_Key  }),
-            channel.assertQueue(Direct_Queue_1,{durable: false})
+            channel.assertQueue(Dead_direct_queue_1,{ durable: false, messageTtl: 30000, deadLetterExchange: DeadL_Direct_Exchange ,deadLetterRoutingKey: Dead_Route1  }),
+            channel.assertQueue(Dead_direct_queue_2,{durable: false})
         ]);
 }
 
 const bindingQueue = async (channel: ConfirmChannel) =>{
     return await Promise.all([
-        channel.bindQueue(Direct_Queue,Direct_Exchange,Bining_Key ),
-        channel.bindQueue(Direct_Queue_1, deadLetterExchange, Rout_Direct_Key)
+        channel.bindQueue(Dead_direct_queue_1,DeadL_Direct_Exchange,Dead_Route1 ),
+        channel.bindQueue(Dead_direct_queue_2, Dead_letter_Exchange, Dead_Route2)
     ]);
 }
 
@@ -34,8 +34,8 @@ async function procedure(){
         }
     });
 
-    channelData.publish(Direct_Exchange, Rout_Direct_Key, {message: 'Direct Message from producer'});
-    channelData.publish(deadLetterExchange, Rout_Direct_Key, {message: 'Direct Message from producer'});
+    channelData.publish(DeadL_Direct_Exchange, Dead_Route1, {message: 'Direct Message from producer'});
+    channelData.publish(Dead_letter_Exchange, Dead_Route2, {message: 'Direct Message2 from producer'});
 }
 
 console.log("Start Pro");
