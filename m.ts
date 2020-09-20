@@ -1,56 +1,41 @@
-import * as amqp from "amqp-connection-manager";
-import { ConfirmChannel, ConsumeMessage } from "amqplib";
+import * as amqp from 'amqp-connection-manager'
+import { ConfirmChannel } from 'amqplib';
+import { BINDING_KEY_DIRECT, DIRECT_QUEUE, DIRECT_EXCHANGE } from '../constants';
 
-async function consume() {
-    const connection = await amqp.connect([
-        "amqp://localhost"
-    ]);
+const connection = amqp.connect(['amqp://localhost']);
 
-    const channelWrapper = await connection.createChannel({
+
+function consumer(connection) {
+    connection.createChannel({
         json: true,
         setup: async (channel: ConfirmChannel) => {
-            channel.consume("WORKING_QUEUE", handleDeadMessage);
+                await consume(channel, directMessageHandler);
+                await newConsume(channel , deadLetterMessageHandler)
         }
     });
-
-
-    const handleDeadMessage = (message: ConsumeMessage) => {
-        let content: any = Buffer.from(message.content).toString();
-        console.log("Dead Message Received ", content);
-
-        content = JSON.parse(content);
-        try {
-            if (content.attempt && content.attempt == 3) {
-                channelWrapper.ack(message);
-                console.log("MessaggeHandled");
-                return;
-            }
-
-            throw new Error("Fucken error On Handle Dead Message");
-        } catch (e) {
-            delayedDelivery(message);
-        }
-    }
-
-    const delayedDelivery = async (message: ConsumeMessage) => {
-        channelWrapper.ack(message);
-
-        let content: any = Buffer.from(message.content).toString();
-        content = JSON.parse(content);
-        let attempt = ++content.attempt || 1
-
-        if (attempt <= 3) {
-            content.attempt = attempt;
-            let routingKey = `retry-${attempt}`;
-            await channelWrapper.publish("TTL_EXCHANGE", routingKey, content);
-            return;
-        }
-
-        console.log("Failed Handle Delayed Message")
-
-    }
-
-
 }
 
-consume();
+
+const consume = async (channel: ConfirmChannel, handler) => {
+
+    await new Promise(resolve => {
+        setTimeout(resolve, 40000);
+    });
+    console.log("Died")
+    channel.consume("DIRECT_QUEUE2", handler, { noAck: true })
+}
+
+const newConsume = async (channel: ConfirmChannel, handler) => {
+    console.log("NEW CONSUME")
+    channel.consume("DIRECT_QUEUE3", handler, { noAck: true })
+}
+
+const directMessageHandler = (message) => {
+    console.log("MESSAGE: " , Buffer.from(message.content).toString())
+}
+
+const deadLetterMessageHandler = (message) => {
+    console.log("DEAD MESSAGE RESOLVER: " , Buffer.from(message.content).toString())
+}
+
+consumer(connection)

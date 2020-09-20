@@ -7,7 +7,7 @@ async function consumer(){
     const channelData = await connection.createChannel({
         json: true,
         setup: async (channel: ConfirmChannel)=>{
-            channel.consume("ququWorking", async (message: ConsumeMessage | any) => {
+            channel.consume(WORKING_QUEUE, async (message: ConsumeMessage | any) => {
                 let content: any = Buffer.from(message.content).toString();
                 console.log("message Received", content);
                 content = JSON.parse(content);

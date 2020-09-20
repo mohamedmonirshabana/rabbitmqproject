@@ -10,13 +10,17 @@ const assertExchange = async(channel: ConfirmChannel)=>{
 }
 
 const assertQueue = async(channel: ConfirmChannel)=>{
-        channel.assertQueue(Direct_Queue,{ durable: false, messageTtl: 30000, deadLetterExchange: deadLetterExchange ,deadLetterRoutingKey: "ROUTE_KEY_DIRECT2"});
-        channel.assertQueue(Direct_Queue_1,{durable: false});
+        return await Promise.all([
+            channel.assertQueue(Direct_Queue,{ durable: false, messageTtl: 30000, deadLetterExchange: deadLetterExchange ,deadLetterRoutingKey: Rout_Direct_Key  }),
+            channel.assertQueue(Direct_Queue_1,{durable: false})
+        ]);
 }
 
-const bindingQueue = (channel: ConfirmChannel) =>{
-    channel.bindQueue(Direct_Queue,Direct_Exchange,Bining_Key );
-    channel.bindQueue(Direct_Queue_1, deadLetterExchange, Rout_Direct_Key);
+const bindingQueue = async (channel: ConfirmChannel) =>{
+    return await Promise.all([
+        channel.bindQueue(Direct_Queue,Direct_Exchange,Bining_Key ),
+        channel.bindQueue(Direct_Queue_1, deadLetterExchange, Rout_Direct_Key)
+    ]);
 }
 
 async function procedure(){
@@ -31,8 +35,7 @@ async function procedure(){
     });
 
     channelData.publish(Direct_Exchange, Rout_Direct_Key, {message: 'Direct Message from producer'});
-
-
+    channelData.publish(deadLetterExchange, Rout_Direct_Key, {message: 'Direct Message from producer'});
 }
 
 console.log("Start Pro");
