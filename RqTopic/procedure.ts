@@ -1,6 +1,6 @@
 import ampq from 'amqp-connection-manager';
 import { ConfirmChannel } from 'amqplib';
-import {host, Topic_Exchange, Topic_Queue, Topic_message} from '../constants';
+import {host, Topic_Exchange, Topic_Queue, Topic_message, Type} from '../constants';
 
 // const host = 'amqp://localhost';
 // const exchangeName = 'RqTopicExchange';
@@ -14,7 +14,7 @@ async function procedure(){
         json: true,
         setup: async (channel : ConfirmChannel) =>{
             return await Promise.all([
-                channel.assertExchange(Topic_Exchange, 'topic'),
+                channel.assertExchange(Topic_Exchange, Type.Topic),
                 channel.assertQueue(Topic_Queue, {durable: true}),
 
             ]);

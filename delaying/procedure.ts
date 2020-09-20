@@ -1,12 +1,12 @@
 import amqp from 'amqp-connection-manager';
 import { ConfirmChannel } from 'amqplib';
-import { WORKING_EXCHANGE, WORKING_DLX , TTL_EXCHANGE, DODO_EXCHANGE, WORKING_QUEUE, host } from '../constants';
+import { WORKING_EXCHANGE, WORKING_DLX , TTL_EXCHANGE, DODO_EXCHANGE, WORKING_QUEUE, host, Type } from '../constants';
 
 function assertExchange(channel : ConfirmChannel){
     return Promise.all([
-        channel.assertExchange(WORKING_EXCHANGE,'fanout'),
-        channel.assertExchange(TTL_EXCHANGE,'direct'),
-        channel.assertExchange(DODO_EXCHANGE,'fanout'),
+        channel.assertExchange(WORKING_EXCHANGE,Type.Fanout),
+        channel.assertExchange(TTL_EXCHANGE,Type.Direct),
+        channel.assertExchange(DODO_EXCHANGE,Type.Fanout),
     ]);
 }
 

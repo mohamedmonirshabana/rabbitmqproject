@@ -1,10 +1,10 @@
 import amqp from 'amqp-connection-manager';
 import { ConfirmChannel, ConsumeMessage } from 'amqplib';
-import { host, Direct_Exchange, Direct_Queue, Rout_Direct_Key, directmessage  } from '../constants';
+import { host, Direct_Exchange, Direct_Queue, Rout_Direct_Key, directmessage , Type } from '../constants';
 
 
 async function assert_Exchange(channel : ConfirmChannel){
-    return channel.assertExchange(Direct_Exchange,"direct");
+    return channel.assertExchange(Direct_Exchange,Type.Direct);
 }
 
 async function assert_Queue(channel : ConfirmChannel){

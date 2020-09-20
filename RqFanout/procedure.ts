@@ -1,6 +1,6 @@
 import amqp from 'amqp-connection-manager';
 import { ConfirmChannel } from 'amqplib';
-import {host, Fanout_Exchange, Fanout_Queue_1, Fanout_Queue_2, Fanout_Queue_3, fanoutMessage} from '../constants';
+import {host, Fanout_Exchange, Fanout_Queue_1, Fanout_Queue_2, Fanout_Queue_3, fanoutMessage, Type} from '../constants';
 
 
 
@@ -10,7 +10,7 @@ async function producer(){
         json: true,
         setup: async (channel : ConfirmChannel) =>{
             return await Promise.all([
-                channel.assertExchange(Fanout_Exchange,'fanout'),
+                channel.assertExchange(Fanout_Exchange, Type.Fanout),
                 channel.assertQueue(Fanout_Queue_1),
                 channel.assertQueue(Fanout_Queue_2),
                 channel.assertQueue(Fanout_Queue_3),
